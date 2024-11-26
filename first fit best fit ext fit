@@ -1,0 +1,131 @@
+#include <iostream>
+using namespace std;
+
+// Function to implement First-Fit Allocation
+void firstFit(int blockSizes[], int m, int processSizes[], int n) {
+    int allocation[n];
+    for (int i = 0; i < n; i++)
+        allocation[i] = -1; // Initialize allocation as -1 (not allocated)
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (blockSizes[j] >= processSizes[i]) {
+                allocation[i] = j; // Assign block j to process i
+                blockSizes[j] -= processSizes[i]; // Reduce block size
+                break;
+            }
+        }
+    }
+
+    cout << "\nFirst-Fit Allocation:\n";
+    cout << "Process\tProcess Size\tBlock Allocated\n";
+    for (int i = 0; i < n; i++) {
+        cout << i + 1 << "\t" << processSizes[i] << "\t\t";
+        if (allocation[i] != -1)
+            cout << allocation[i] + 1;
+        else
+            cout << "Not Allocated";
+        cout << endl;
+    }
+}
+
+// Function to implement Best-Fit Allocation
+void bestFit(int blockSizes[], int m, int processSizes[], int n) {
+    int allocation[n];
+    for (int i = 0; i < n; i++)
+        allocation[i] = -1; // Initialize allocation as -1 (not allocated)
+
+    for (int i = 0; i < n; i++) {
+        int bestIndex = -1;
+        for (int j = 0; j < m; j++) {
+            if (blockSizes[j] >= processSizes[i]) {
+                if (bestIndex == -1 || blockSizes[j] < blockSizes[bestIndex]) {
+                    bestIndex = j;
+                }
+            }
+        }
+        if (bestIndex != -1) {
+            allocation[i] = bestIndex; // Assign the best block
+            blockSizes[bestIndex] -= processSizes[i]; // Reduce block size
+        }
+    }
+
+    cout << "\nBest-Fit Allocation:\n";
+    cout << "Process\tProcess Size\tBlock Allocated\n";
+    for (int i = 0; i < n; i++) {
+        cout << i + 1 << "\t" << processSizes[i] << "\t\t";
+        if (allocation[i] != -1)
+            cout << allocation[i] + 1;
+        else
+            cout << "Not Allocated";
+        cout << endl;
+    }
+}
+
+// Function to implement Worst-Fit Allocation
+void worstFit(int blockSizes[], int m, int processSizes[], int n) {
+    int allocation[n];
+    for (int i = 0; i < n; i++)
+        allocation[i] = -1; // Initialize allocation as -1 (not allocated)
+
+    for (int i = 0; i < n; i++) {
+        int worstIndex = -1;
+        for (int j = 0; j < m; j++) {
+            if (blockSizes[j] >= processSizes[i]) {
+                if (worstIndex == -1 || blockSizes[j] > blockSizes[worstIndex]) {
+                    worstIndex = j;
+                }
+            }
+        }
+        if (worstIndex != -1) {
+            allocation[i] = worstIndex; // Assign the worst block
+            blockSizes[worstIndex] -= processSizes[i]; // Reduce block size
+        }
+    }
+
+    cout << "\nWorst-Fit Allocation:\n";
+    cout << "Process\tProcess Size\tBlock Allocated\n";
+    for (int i = 0; i < n; i++) {
+        cout << i + 1 << "\t" << processSizes[i] << "\t\t";
+        if (allocation[i] != -1)
+            cout << allocation[i] + 1;
+        else
+            cout << "Not Allocated";
+        cout << endl;
+    }
+}
+
+int main() {
+    int m, n;
+
+    cout << "Enter the number of memory blocks: ";
+    cin >> m;
+    int blockSizes[m];
+    cout << "Enter the sizes of the memory blocks:\n";
+    for (int i = 0; i < m; i++) {
+        cin >> blockSizes[i];
+    }
+
+    cout << "Enter the number of processes: ";
+    cin >> n;
+    int processSizes[n];
+    cout << "Enter the sizes of the processes:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> processSizes[i];
+    }
+
+    // Create copies of blockSizes for each strategy
+    int blockSizesFirstFit[m], blockSizesBestFit[m], blockSizesWorstFit[m];
+    for (int i = 0; i < m; i++) {
+        blockSizesFirstFit[i] = blockSizes[i];
+        blockSizesBestFit[i] = blockSizes[i];
+        blockSizesWorstFit[i] = blockSizes[i];
+    }
+
+    // Call the allocation functions
+    firstFit(blockSizesFirstFit, m, processSizes, n);
+    bestFit(blockSizesBestFit, m, processSizes, n);
+    worstFit(blockSizesWorstFit, m, processSizes, n);
+
+    return 0;
+}
